@@ -1,0 +1,32 @@
+
+
+Why?
+
+role is a way of developing playbook
+roles are organized in standard structure
+role are quite re-usable
+role can be shared to other(git/)
+
+
+we dont have to use include command if we're using roles.
+
+in roles playbook looks simple and readable 
+
+in stead of single playbook, we seperate it multiple roles, we can reuse for different use
+ex: if someone want to deploy db server,webserver this role design helps us.
+
+
+ansible-galaxy init webserver
+
+webserver
+  Readme.md  :-
+  test:
+  tasks
+  handlers
+  vars
+  default : stores default variable values
+
+
+
+  ansible-galaxy init mysql_db
+  ansible-galaxy init flask_web

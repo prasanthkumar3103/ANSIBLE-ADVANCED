@@ -1,0 +1,12 @@
+---
+- name: Playbook-sample
+  hosts: db and webservers
+  tasks:
+    - name: Try Ping( ALL NODES CONNECTIVITY CHECK)
+      ping:
+
+
+# ansible-playbook playbook-sample.yml inventory
+
+
+

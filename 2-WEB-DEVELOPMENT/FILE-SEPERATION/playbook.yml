@@ -1,0 +1,14 @@
+---
+- name: Playbook-sample
+  hosts: db_and_web_servers
+  tasks:
+    - name: Install all required dependencies
+      apt: name={{item}} state=installed
+      with_items:
+        - python
+        - python-setuptools
+        - python-dev
+        - build-essential
+        - python-pip
+    - include: tasks/deploy_db.yml
+    - include: tasks/deploy_web.yml

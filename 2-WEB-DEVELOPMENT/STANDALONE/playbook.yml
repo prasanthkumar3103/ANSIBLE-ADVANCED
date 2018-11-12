@@ -1,0 +1,54 @@
+---
+- name: Playbook-sample
+  hosts: db_and_web_servers
+  tasks:
+    - name: Install all required dependencies
+      apt: name={{item}} state=installed
+      with_items:
+        - python
+        - python-setuptools
+        - python-dev
+        - build-essential
+        - python-pip
+
+    - name: Install MySQL Database
+      apt: name={{item}} state=installed
+      with_items:
+        - mysql-server
+        - mysql-client
+
+    - name: Start Mysql service
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Create Application database
+      mysql_db: name:employee_db state:present
+
+    - name: create Database user
+      mysql_user: 
+       name: db_user
+       password: Passw0rd
+       priv: '*.*:ALL'
+       state: present
+
+    - name: Python webserver install
+      pip:
+        name={{item}} state=installed
+      with_items:
+      - flask
+      - flask-mysql
+
+    - name: copy the source code 
+      copy:  src=app.py dest=/opt/app.py
+
+    - name: Start the webserver
+      shell: FLASK_APP=app.py nohup flask run --host=0.0.0.0 &
+
+
+      # ansible-playbook playbook.yml inventory
+
+
+      
+  
