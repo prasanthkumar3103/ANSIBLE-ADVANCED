@@ -1,0 +1,15 @@
+inventory:-
+
+it is all about managing servers in ansible
+
+ansible --list-host all [ list of all hosts]
+ansible --list-host "*" [ list of all hosts]
+
+it is located in /etc/ansible/Hosts directory
+
+ansible.cfg:-
+
+
+
+
+

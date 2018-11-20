@@ -1,0 +1,12 @@
+playbooks are expressed in yaml
+
+Yaml:- yaml stands for yet another markup language
+
+is human readable language,used for configuration files ,which machines can also understand.
+
+yaml is very to read ,write and understand comparing to another format xml/json
+
+yaml.org/start.html
+
+yamlint.com
+

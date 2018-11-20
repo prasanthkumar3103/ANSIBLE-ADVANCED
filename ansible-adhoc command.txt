@@ -1,0 +1,43 @@
+# ansible webservers -a "df -h"
+
+To check free memory on particular host
+
+# ansible webservers -a "free -m"
+
+uptime for particular host
+# ansible webservers -a "uptime"
+
+ftp(copy file to all hosts"
+#ansible all -i hosts -u ansible -m copy "src=b dest=/tmp/b"
+
+specifying permission to specific file
+#ansible webservers -m file -a "dest=/tmp/b mode=600"
+
+creating directory under tmp (abc) using file module
+# ansible webservers -m file -a "dest=/tmp/abc mode=755 state=directory"
+
+delete directory under tmp (abc) using file module
+# ansible webservers -m file -a "dest=/tmp/abc state=absent"
+
+checking particular package is present or not(if its present it will say success)
+#ansible webservers -m apt -a  "name=nginx state=present"
+
+checking particular package is latest version or not(if its present it will say success)
+#ansible webservers -m apt -a  "name=nginx state=latest"
+if not package updates to latest
+
+checking services modules
+#ansible webservers -m service -a "name=nginx state=started"
+#ansible webservers -m service -a "name=nginx state=restarted"
+#ansible webservers -m service -a "name=nginx state=stopped"
+
+to check on which port dbservers are running
+#ansible -a "netstat -an" dbserver
+
+
+
+
+
+
+
+

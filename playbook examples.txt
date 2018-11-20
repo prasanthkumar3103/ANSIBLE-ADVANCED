@@ -1,0 +1,102 @@
+playbook file name : webserver.yaml
+
+Example:1
+
+- name: configure webserver with nginx
+  hosts: webservers
+  become: True
+  tasks:
+    - name: install nginx
+      apt: name=nginix update_cache=yes
+
+    - name: copy nginx config file
+      copy: src=files/nginx.conf dest=/etc/nginx/sites-available/default
+      [it is copy file from local/remote machine]
+
+    - name: enable configuration
+      file: >
+        dest=/etc/nginx/sites-enabled/default
+        src=/etc/nginx/sites-available/default
+        state=link
+    [ it is link creating symbolic link, we have used file module for that]
+
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+execution: ansible-playbook webserver.yaml
+
+
+
+mysql.yml
+---
+- hosts: dbservers
+  become: true
+  tasks:
+    - name: install mysql server
+      apt: name=mysql-server state=present upate_cache=yes
+
+    - name: ensure mysql started
+      service: name=mysql state=started enable=yes
+
+    - name: ensure mylistening on all ports
+      lineinfile: dest=/etc/mysql/my.conf regexp=^bind-address
+                  line="bind-address = 0.0.0.0"
+
+default mysql conf is located in /etc/mysql/my.conf, writing regexp for that file the lin\
+which starts with bind-addres,replace with 0.0.0.0
+
+after making this,we need to restart, for that we use handlers
+
+      notify: restart mysql
+
+   handlers:
+    - name: restart mysql
+      service: name: mysql state: restarted
+
+
+
+to check on which port dbservers are running
+#ansible -a "netstat -an" dbserver
+
+execution : ansible-playbook mysql.yml
+
+
+
+apache2.yml
+
+---
+- hosts: appservers
+  become: true
+  tasks:
+    - name: install apache2 server
+      apt: name=apache2 state=present update_cache=yes
+
+
+
+
+Iteration :-
+
+---
+- hosts: appservers
+  become: true
+  tasks:
+    - name: install apache2 server
+      apt: name={{item}} state=present update_cache=yes
+
+     with_item:
+       - apache2
+       - libapache2-mod-wsgi
+       - git
+       - maven
+       - tree
+       - python pip
+
+
+playbook execution more options
+==============================
+
+ansible-playbook -v playbook.yml
+ansible-playbook --check appservers.yml ( to check desired state)
+ansible-playbook -vvvv playbook.yml ( to check what is happening/went wrong)
+
+    

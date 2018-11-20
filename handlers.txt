@@ -1,0 +1,14 @@
+handlers:
+
+it is one of conditional forms
+it is similar to task  but it only run if notified by a task
+a task will fire the notification, if ansible recognizes task state changes
+handlers will run after all of the tasks are run and then only runs even if they are
+notified multiple times
+handlers are we use in ansible for restart service and reboot.
+
+handlers:
+  - name: restart nginx
+    service: name:nginx state:restarted
+
+

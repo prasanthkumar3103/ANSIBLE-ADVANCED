@@ -1,0 +1,36 @@
+stack_status.yml: to check services are running or not.
+
+---
+- hosts: webservers
+  become: true
+  tasks:
+   - name: verify nginx service
+     command: service nginx status
+
+   - name: verify nginx listening on port
+     wait_for: port=80 timout=1
+
+[ default wait time is 300secm,we changed to 1sec, to have immediate feedback]
+[wait_for module can be used for many ways, here we used to check 80 wait time check]
+
+- hosts: appservers
+  become: true
+  tasks:
+   - name: verify apache2 service
+     command: service apache2 status
+
+  - name: verify apache2 listening port 80
+    wait_for: port=80 timeout=1
+
+
+- hosts: dbservers
+  become: true
+  tasks:
+   - name: verify mysql service
+     command: service mysql status
+    
+
+   - name: verify mysql listening port 3306
+     wait_for: port=3306 timeout=1
+
+  
