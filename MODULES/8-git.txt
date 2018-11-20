@@ -1,0 +1,6 @@
+
+    - name: Checkout drush 8.x branch
+      git:
+          repo: https://github.com/drush-ops/drush.git
+          version: 8.x
+          dest: /opt/drush

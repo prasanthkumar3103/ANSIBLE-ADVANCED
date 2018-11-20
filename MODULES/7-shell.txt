@@ -1,0 +1,13 @@
+command: to run any tool commands like /shell/php
+
+
+ - name: Run composer installer
+      command: >
+        php composer-installer.php
+        chdir=/tmp/composer-installer.php
+        creates=/usr/local/bin/composer
+
+chdir : is a paratemet to change directory
+create : /usr/local/bin/composer directory if not exist
+
+

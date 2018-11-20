@@ -1,0 +1,35 @@
+Playbook:-
+----------
+having configuration in playbook will be lengthy
+
+we can split up task in 2 ways: 1.using include 2.roles
+
+Roles:-
+-----
+we can organize tasks more efficient ways or breaking tasks
+
+
+can we include one playbook in other playbook?
+
+yes!
+
+on top of playbook using 
+
+- include: appserver.yml
+- include: dbserver.yml
+
+---
+- name: Configure webserver nginx 
+  hosts:
+  become: True
+  tasks:
+    - include: apt-update.yml
+    - include: tasks/common-task.yml
+    - include: tasks/php.yml
+    - include: tasks/apt.yml
+    - include: tasks/composer.yml
+    - include: tasks/drupal.yml
+
+  handlers:
+    - include: tasks/restart-nginx.yml
+ 

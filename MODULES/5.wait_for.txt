@@ -1,0 +1,43 @@
+wait_for: to wait for many different things
+
+
+
+
+
+
+
+
+
+timeout=1 : wait time
+
+
+---
+- hosts: webservers
+  become: true
+  tasks:
+    - name: verify nginx service via apt using service command
+      command: service nginx status
+
+    - name: verify nginx is listening on 80
+      wait_for: port=80 timeout=1
+
+
+---
+- hosts: appservers
+  become: true
+  tasks:
+    - name: verify apache2 service via apt using service command
+      command: service apach2 status
+
+    - name: verify nginx is listening on 80
+       wait_for:port=80 timeout=1 #(to get immediate response timeout is set for 1)
+
+---
+- hosts: dbservers
+  become: true
+  tasks:
+    - name: verify mysql service via apt using service command
+      command: service mysql status
+    
+    - name: verify nginx is listening on 80
+      wait_for: port=3306 timeout=1

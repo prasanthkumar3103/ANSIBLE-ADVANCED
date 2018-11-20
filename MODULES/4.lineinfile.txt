@@ -1,0 +1,27 @@
+ - name: ensure mysql listening on all - portinstall
+      lineinfile: dest/etc/mysql/my.conf regexp=^bind-address
+                  line="bind-address =0.0.0.0"
+
+
+lineinfile: ensuring/search a line is in particular file and replacing exiting file using regular expression.
+it uses python regular expression.
+
+file landing area default /etc/mysql/my.conf 
+
+regexp=^bind-address : finding regular expression starts with bind-address
+
+replace with  : line="bind-address =0.0.0.0"
+
+
+
+post that restart 
+
+    - name: ensure mysql listening on all - portinstall
+      lineinfile: dest/etc/mysql/my.conf regexp=^bind-address
+                  line="bind-address = 0.0.0.0"
+      notify: restart mysql
+
+  handlers:
+   - name: restart mysql
+     service: name:mysql state:restarted
+

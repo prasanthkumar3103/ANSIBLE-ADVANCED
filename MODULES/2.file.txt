@@ -1,0 +1,21 @@
+- name: enable configuration #(creating symbolic lynk)
+     file: >
+       dest=/etc/nginx/sites-available/default
+       src=/etc/nginx/sites-available/default
+       state=link
+
+
+FILE module is used to create symbolic lynk
+
+
+
+    - name: set permission properly for setting.php
+      file:
+        path: "{{ drupal_core_path }}/sites/default/setting.php"
+
+
+- name: set permissions properly for files directory
+      file:
+        path: "{{ drupal_core_path }}/sites/default/files"
+        mode: 0744
+        recurse: yes

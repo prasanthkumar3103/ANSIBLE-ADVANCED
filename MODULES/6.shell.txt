@@ -1,0 +1,28 @@
+shell: to execute linux commands like change dir
+
+
+---
+- hosts: nodeserver
+  become: true
+  vars:
+    node_application: /usr/local/opt/node
+  tasks:
+    - name: Disable firewall
+      service: name:ufw state:stopped enabled=no
+
+    - name: install node js
+      apt: name=npm state=present update_cache=yes
+
+    - name: Ensure Node.js app folder exists
+      file: "path={{ node_app_location }} state=directory"
+
+    - name: copy example node.js app to server
+      copy: "src=app dest={{ node_app_location }}"
+
+    - name: Install app dependencies
+      shell: npm install express --save
+      args:
+        chdir: "{{ node_app_location }}/app"
+
+    - name: start example node.js app in background
+      shell: "{{ node_app_location }}/app/app.js >>stdout.txt 2> stderror.txt &"

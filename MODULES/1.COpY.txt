@@ -1,0 +1,5 @@
+- name: copy nginx config file
+  copy: src=files/nginx.conf dest=/etc/nginx/sites-available/default
+
+it copies file from local or remote machine to remote or local machine
+
