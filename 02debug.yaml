@@ -1,0 +1,8 @@
+---
+- name: Printing message
+  hosts: all
+  tasks:
+    - name: Play Task
+      debug:
+      
+# default message for debug is hello world

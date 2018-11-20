@@ -1,0 +1,19 @@
+---
+- name: Shell command
+  hosts: all
+  tasks:
+    - name: Simple run command
+      shell: ls /boot
+      register: OUT
+    - name: Print out put
+      debug:
+        msg: "{{OUT}}"
+    - name: Print exit status
+      set_fact:
+        EXIT_STATUS: "{{OUT.rc}}"
+    - name: print exit status
+      debug:
+        msg: "{{EXIT_STATUS}}"
+
+# shell is not giving output 
+# to have that output, we have to store it into a variable called register and print with debug module

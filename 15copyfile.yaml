@@ -1,0 +1,10 @@
+- name: copy a file to remote location
+  hosts: all
+  become: yes
+  tasks:
+    - name : copy a file
+      copy:
+        src: files/a.txt
+        dest: /tmp/a.txt
+
+## first create files in playbook laid folder,inside that create files dir and a.txt files 

@@ -1,0 +1,14 @@
+# package installation can be done using yum/apt/or generic package module
+# Priviliged escalation in ansible
+# http://docs.ansible.com/ansible/latest/become.html
+
+---
+- name: Printing message
+  hosts: all
+  #become: yes
+  tasks:
+    - name: install gcc 
+      become: yes #this is at play-level
+      package:
+        name: gcc
+        state: present

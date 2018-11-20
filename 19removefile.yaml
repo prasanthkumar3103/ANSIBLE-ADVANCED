@@ -1,0 +1,8 @@
+- name: Removing a existing file
+  hosts: all
+  become: yes
+  tasks:
+    - name : Remove a file
+      file:
+        path: /tmp/a.txt
+        state: absent

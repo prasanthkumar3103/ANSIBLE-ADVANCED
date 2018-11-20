@@ -1,0 +1,13 @@
+---
+- name: install web server
+  host: all
+  become: yes
+  tasks:
+    - name: Install Httpd
+      package:
+        name: httpd
+        state: present
+    - name: install httpd-devel level package
+      package:
+        name: httpd-devel
+        state: present

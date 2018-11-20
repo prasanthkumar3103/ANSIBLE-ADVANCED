@@ -1,0 +1,14 @@
+- name: install
+  hosts: all
+  tags:
+      - first
+  tasks:
+    - debug:
+        msg: "install play"
+        
+- name: config
+  hosts: all
+  tags:
+      - second
+      - debug:
+          msg: "config play"        

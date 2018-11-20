@@ -1,0 +1,14 @@
+---
+- name: Printing message
+  hosts: all
+  #become: yes
+  #vars: # nO HARM IN CREATION variable here and calling it as play variable
+    #package_name: tree
+  tasks:
+    - name: install gcc 
+      become: yes #this is at play-level
+      vars: ### Play level variable creation
+          package_name: tree
+      package:
+        name: "{{package_name}}"
+        state: present

@@ -1,0 +1,20 @@
+# variable substitude at run time 
+# http://docs.ansible.com/ansible/latest/playbooks_prompts.html
+
+## this module is useful when we wanna hide the password, it will not show whatever you enter
+
+---
+- name: Printing message
+  hosts: all
+  become: yes
+  vars_prompt:
+  #list of values,it starts with -
+  - name: package_name
+    prompt: enter the package name
+    #private no shows  what is the input you are giving
+    private: no
+  tasks:
+    - name: install "{{package_name}}" package
+      package:
+        name: "{{package_name}}"
+        state: latest

@@ -1,0 +1,26 @@
+---
+- name: Full stack
+  hosts: all
+  become: yes
+  vars:
+    mod_jk_url: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
+  tasks:
+    - name: Print Packages list and install
+      #debug:
+      #  msg: "{{item }}"
+      package:
+        name: "{{item}}"
+        state: latest
+      with_items:
+        - httpd
+        - httpd-devel
+        - gcc
+    - name: Start the service
+      service:
+        name: httpd 
+        state: started
+        enabled: yes
+    - name: Download a file from internet
+      get_url:
+        url: "{{mod_jk_url}}"
+        dest: /opt/tomcat-connectors-1.2.42-src.tar.gz

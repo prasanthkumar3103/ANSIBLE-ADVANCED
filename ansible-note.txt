@@ -1,0 +1,102 @@
+yum install ansible
+yum install python2-pip -y
+
+ssh -i devops.pem -l ec2-user 10.142.0.9
+#10.142.0.9 - node ip
+# get by ip a
+chmod og-rw devops.pem
+ssh -i devops.pem -l ec2-user 10.142.0.9
+#come out from dev node,simply exit
+# create a host file in ansible server by inv and provide node ip in this file
+inv
+10.142.0.9
+#ansible -i inv all -u ec2-user --private-key devops.pem -m ping
+#ansible -vvv -i inv all -u ec2-user --private-key devops.pem -m ping
+#ansible -i inv all --list-hosts
+#ansible -i inv hyd --list-hosts
+##ansible -i inv bang --list-hosts
+
+Q# can inventory file have one group of hosts in other group,if so how?
+sol:using children keyword
+[appserver:children]
+hydapp
+blrapp
+
+[hydapp]
+hydapp01
+hydapp02
+
+[blrapp]
+blrapp01
+blrapp02
+
+ansible configuration file
+vi /etc/ansible/ansible.cfg
+
+this config file will be useful,when all the team uses the same conifguration.
+
+cp /etc/ansible/ansible.cfg /tmp
+
+export ANSIBLE_CONFIG=/tmp/ansible.cfg
+unset ANSIBLE_CONFIG
+
+modify the below properties in ansible.cfg
+
+inventory      = inventory
+
+#keep the inventory file under /etc/ansible
+
+# default user to use for playbooks if user is not specified
+# (/usr/bin/ansible will use current user as default)
+remote_user = ec2-user
+
+
+# if set, always use this private key file for authentication, same as
+# if passing --private-key to ansible or ansible-playbook
+private_key_file = /home/ec2-user/devops.pem
+
+
+Ansible Modules
+==============
+google : ansible module index
+
+ping
+package
+
+ansible all -m package -a name=httpd
+
+# it will ask for a confirmation. To avoid this get into ansible.cfg file and modify below property.
+
+# uncomment this to disable SSH key host checking
+host_key_checking = False
+
+ansible all --sudo -m package -a name=httpd
+
+## All these are adhoc commands, usually we write it in playbook using yaml format.
+
+PPT ### YAML ####
+
+General example#
+
+name - Rama
+age -46
+phone - 123,456
+add perm =hyd,present=blr
+
+List#
+name	: rama
+age	: 46
+phone :
+  - 123
+  - 456
+
+Key value# which is having more values
+
+	
+
+
+
+
+
+
+

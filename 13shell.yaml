@@ -1,0 +1,9 @@
+---
+- name: Shell command
+  hosts: all
+  tasks:
+    - name: Simple run command
+      shell: ls /boot
+
+# this is not giving output 
+# to have that output, we have to store it into a variable.

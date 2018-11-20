@@ -1,0 +1,17 @@
+- name: wait for connection demo
+  hosts: all
+  become: yes
+  tasks:
+    - name:   reboot the node
+      shell: shutdown  -r +1 # telling ansible to run after 1min, meantime it moved to next task executed waitforconn
+      async: 0 # this makes playbook not to be terminated
+      poll: 0  # this makes playbook not to be terminated
+      ignore_errors: true # this makes playbook not to be terminated
+
+    - name: wait for system to be reachable
+      wait_for_connection:
+        delay: 20
+        timeout: 300     
+      
+    - name: print uptime
+      shell: uptime

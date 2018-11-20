@@ -1,0 +1,67 @@
+---
+- name: Full stack
+  hosts: all
+  become: yes
+  vars:
+    mod_jk_url: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
+  tasks:
+    - name: Print Packages list and install
+      #debug:
+      #  msg: "{{item }}"
+      package:
+        name: "{{item}}"
+        state: latest
+      with_items:
+        - httpd
+        - httpd-devel
+        - gcc
+    - name: Start the service
+      service:
+        name: httpd 
+        state: started
+        enabled: yes
+
+#       # commented because unarchive module can download and extar
+#    - name: get tar file name
+#         shell: "echo {{mod_jk_url}} | awk -F / '{print $NF}'"
+#      register: out
+
+##    - name: set tar file variable
+##     set_fact:
+##        mod_jk_tarfile: "/opt/{{out.stdout}}"
+### # commented because unarchive module can download and extar
+
+    - name: get tar dir name
+      shell: "echo {{mod_jk_url}} | awk -F / '{print $NF}' | sed -e 's/.tar.gz'//" 
+      register: out
+    
+    - name: set tar dir variable
+      set_fact:
+        mod_jk_tardir: "/opt/{{out.stdout}}"
+
+# commented because unarchive module can download and extar
+#   - name: Download  mod_jk file from internet
+#      get_url:
+#       url: "{{mod_jk_url}}"
+#         dest: "{{mod_jk_tarfile}}"
+    - name: Extract the tar file
+      unarchive:
+        src:  "{{mod_jk_url}}" 
+        dest: /opt
+        remote_src: yes
+
+    - name: compile mod_jk
+      shell: ./configure --with-apxs=/bin/apxs && make clean && make && make install 
+      args:
+        chdir: "{{mod_jk_tardir}}/native"
+
+    - name: copy MOD_JK Config files
+      copy: # inside files directory u have files ,so ensure dir is avail whereever u have playbook
+        src: "files/{{item }}"
+        dest: "/etc/httpd/conf.d/{{item}}"
+      with_items:
+      - mod_jk.conf
+      - workers.properties
+    
+
+# Run shell command in ansible - Google

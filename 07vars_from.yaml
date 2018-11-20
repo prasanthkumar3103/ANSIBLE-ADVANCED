@@ -1,0 +1,16 @@
+---
+- name: Printing message
+  hosts: all
+  become: yes
+  tasks:
+    - name: install "{{package_name}}" package
+      package:
+        name: "{{package_name}}"
+        state: latest
+
+# simply get into /etc/ansible directory and modify inventory file 
+# to pick up variables from inventory,like below step
+#10.142.0.9 package_name=mariadb
+
+
+

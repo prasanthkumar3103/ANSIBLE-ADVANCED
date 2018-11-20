@@ -1,0 +1,18 @@
+- name: copy a blcok in file
+  hosts: all
+  tasks:
+    - name: block in file
+      blockinfile:
+        path: /tmp/b.txt
+        create: yes
+        block:
+          LoadModule jk_module modules/mod_jk.so
+          JkWorkersFile conf.d/workers.properties
+          JkLogFile logs/mod_jk.log
+          JkLogLevel info
+          JkLogStampFormat "[%a %b %d %H:%M:%S %Y]"
+          JkOptions +ForwardKeySize +ForwardURICompat -ForwardDirectories
+          JkRequestLogFormat "%w %V %T"
+          JkMount /student tomcatA
+          JkMount /student/* tomcatA
+          

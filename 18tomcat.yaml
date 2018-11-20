@@ -1,0 +1,32 @@
+# Tomcat installation
+    - name: Install Tomcat App server
+      hosts: all
+      become: yes
+      vars:
+        tomcat_url: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz"
+      tasks:
+        - name: install java
+          package:
+            name: java
+            state: latest 
+        - name: Download and archive and untar
+          unarchive:
+            src:  "{{tomcat_url}}" 
+            dest: /opt
+            remote_src: yes
+
+        - name: get tar dir name
+          shell: "echo {{tomcat_url}} | awk -F / '{print $NF}' | sed -e 's/.tar.gz'//" 
+          register: out
+
+        - name: set tar dir variable
+          set_fact:
+            TOMCAT_tardir: "/opt/{{out.stdout}}"
+       
+        - name: Removing .txt find file
+          file:
+            path: "{{TOMCAT_tardir}}/webapps/{{item}}"
+            state: absent
+          with_items:
+            - student.war
+            - student

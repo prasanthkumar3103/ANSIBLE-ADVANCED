@@ -1,0 +1,11 @@
+---
+- name: Full stack
+  hosts: all
+  become: yes
+  tasks:
+    - name: Print Package list
+      debug:
+        msg: "Package Name = {{item }}"
+      with_items:
+        - httpd
+        - httpd-devel

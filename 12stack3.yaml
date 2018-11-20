@@ -1,0 +1,106 @@
+---
+- name: Full stack
+  hosts: all
+  become: yes
+  vars:
+    mod_jk_url: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
+  tasks:
+    - name: Print Packages list and install
+      #debug:
+      #  msg: "{{item }}"
+      package:
+        name: "{{item}}"
+        state: latest
+      with_items:
+        - httpd
+        - httpd-devel
+        - gcc
+    - name: Start the service
+      service:
+        name: httpd 
+        state: started
+        enabled: yes
+
+#       # commented because unarchive module can download and extar
+#    - name: get tar file name
+#         shell: "echo {{mod_jk_url}} | awk -F / '{print $NF}'"
+#      register: out
+
+##    - name: set tar file variable
+##     set_fact:
+##        mod_jk_tarfile: "/opt/{{out.stdout}}"
+### # commented because unarchive module can download and extar
+
+    - name: get tar dir name
+      shell: "echo {{mod_jk_url}} | awk -F / '{print $NF}' | sed -e 's/.tar.gz'//" 
+      register: out
+    
+    - name: set tar dir variable
+      set_fact:
+        mod_jk_tardir: "/opt/{{out.stdout}}"
+
+# commented because unarchive module can download and extar
+#   - name: Download  mod_jk file from internet
+#      get_url:
+#       url: "{{mod_jk_url}}"
+#         dest: "{{mod_jk_tarfile}}"
+    - name: Extract the tar file
+      unarchive:
+        src:  "{{mod_jk_url}}" 
+        dest: /opt
+        remote_src: yes
+
+    - stat: # stat is the module to check a file exist or not
+        path: /etc/httpd/modules/mod_jk.so
+      register: out
+ 
+    - name: compile mod_jk
+      shell: "./configure --with-apxs=/usr/bin/apxs && make clean && make && make install" 
+      # always check which apxs
+      args:
+        chdir: "{{mod_jk_tardir}}/native"
+      # condition run this script  if mod_jk.so file doesnt exist,run configure
+      when: out.stat.exists == false
+
+    - name: copy MOD_JK Config files
+      copy: # inside files directory u have files ,so ensure dir is avail whereever u have playbook
+        src: "files/{{item }}"
+        dest: "/etc/httpd/conf.d/{{item}}"
+      with_items:
+      - mod_jk.conf
+      - workers.properties
+
+# Tomcat installation
+- name: Install Tomcat App server
+  hosts: all
+  become: yes
+  vars:
+    tomcat_url: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz"
+  tasks:
+    - name: install java
+      package:
+        name: java
+        state: latest 
+    - name: Download and archive and untar
+      unarchive:
+        src:  "{{tomcat_url}}" 
+        dest: /opt
+        remote_src: yes
+
+    - name: get tar dir name
+      shell: "echo {{tomcat_url}} | awk -F / '{print $NF}' | sed -e 's/.tar.gz'//" 
+      register: out
+
+    - name: set tar dir variable
+      set_fact:
+        TOMCAT_tardir: "/opt/{{out.stdout}}"
+    - name: Removing .txt find file
+      file:
+        path: "{{TOMCAT_tardir}}/webapps/{{item}}"
+        state: absent
+      with_items:
+        - student.war
+        - student          
+
+
+# Run shell command in ansible - Google

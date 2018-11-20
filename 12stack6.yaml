@@ -1,0 +1,164 @@
+---
+- name: Full stack
+  hosts: all
+  become: yes
+  vars:
+    mod_jk_url: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
+  tasks:
+    - name: Print Packages list and install
+      #debug:
+      #  msg: "{{item }}"
+      package:
+        name: "{{item}}"
+        state: latest
+      with_items:
+        - httpd
+        - httpd-devel
+        - gcc
+    - name: Start the service
+      service:
+        name: httpd 
+        state: started
+        enabled: yes
+
+#       # commented because unarchive module can download and extar
+#    - name: get tar file name
+#         shell: "echo {{mod_jk_url}} | awk -F / '{print $NF}'"
+#      register: out
+
+##    - name: set tar file variable
+##     set_fact:
+##        mod_jk_tarfile: "/opt/{{out.stdout}}"
+### # commented because unarchive module can download and extar
+
+    - name: get tar dir name
+      shell: "echo {{mod_jk_url}} | awk -F / '{print $NF}' | sed -e 's/.tar.gz'//" 
+      register: out
+    
+    - name: set tar dir variable
+      set_fact:
+        mod_jk_tardir: "/opt/{{out.stdout}}"
+
+# commented because unarchive module can download and extar
+#   - name: Download  mod_jk file from internet
+#      get_url:
+#       url: "{{mod_jk_url}}"
+#         dest: "{{mod_jk_tarfile}}"
+    - name: Extract the tar file
+      unarchive:
+        src:  "{{mod_jk_url}}" 
+        dest: /opt
+        remote_src: yes
+
+    - stat: # stat is the module to check a file exist or not
+        path: /etc/httpd/modules/mod_jk.so
+      register: out
+ 
+    - name: compile mod_jk
+      shell: "./configure --with-apxs=/usr/bin/apxs && make clean && make && make install" 
+      # always check which apxs
+      args:
+        chdir: "{{mod_jk_tardir}}/native"
+      # condition run this script  if mod_jk.so file doesnt exist,run configure
+      when: out.stat.exists == false
+
+    - name: copy MOD_JK Config files
+      copy: # inside files directory u have files ,so ensure dir is avail whereever u have playbook
+        src: "files/{{item }}"
+        dest: "/etc/httpd/conf.d/{{item}}"
+      with_items:
+      - mod_jk.conf
+      - workers.properties
+
+# Tomcat installation
+- name: Install Tomcat App server
+  hosts: all
+  become: yes
+  tags:
+    - app
+  vars:
+    tomcat_url: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz"
+  tasks:
+    - name: install java
+      package:
+        name: java
+        state: latest 
+
+    - name: get tom tar dir name
+      shell: "echo {{tomcat_url}} | awk -F / '{print $NF}' | sed -e 's/.tar.gz'//" 
+      register: out
+    
+    - name: check tomcat dir exist or not
+      stat:
+        path: "{{tomcat_url}}"
+      register: out
+      
+    - name: Download and archive and untar
+      unarchive:
+        src:  "{{tomcat_url}}" 
+        dest: /opt
+        remote_src: yes
+        #when: out.stat.exists == false
+
+    - name: Download the student.war
+      get_url:
+        url: "https://github.com/prasanthbangs2016/laborare/raw/master/APPSTACK/student.war"
+        dest: /opt/apache-tomcat-9.0.2/webapps/student.war
+    
+    - name: Download mysql jar file
+      get_url:
+        url: "https://github.com/carreerit/cogito/raw/master/appstack/mysql-connector-java-5.1.40.jar"
+        dest: /opt/apache-tomcat-9.0.2/lib/mysql-connector-java-5.1.40.jar
+
+    - name: copy context.xml file
+      copy:
+        src: files/context.xml  # this should exist ansible server#/home/ec2-user/playbook/files
+        dest: "{{tomcat_url}}/conf/context.xml"
+    
+    - name: start tomcat service
+      shell: nohup sh {{tomcat_url}}/bin/startup.sh #through scrpt and cm tool, nohup good practice
+
+- name: Install maria Db
+  hosts: all
+  become: yes
+  vars:
+    DBUSERNAME: student
+    DBCLIENT: localhost
+    DBPASSWORD: student@1
+  tags: 
+    - db
+  tasks:
+    - name: Entered maria db install
+      package:
+        name: "{{item}}"
+        state: latest
+  with_items:
+    - mariadb-server
+    - mariadb
+    - MySQL-python
+
+    - name: start maria db
+      service:
+        name: mariadb
+        state: started
+    
+    - name: copy stuent.sql file
+      copy:
+        src: files/student.sql.j2
+        dest: /tmp/student.sql
+
+    - name: create studentapp db
+      mysql_db:
+        name: studentapp
+        state: present
+
+    - name: run student.sql file
+      mysql_db:
+        state: import
+        name: all
+        target: /tmp/student.sql
+
+             
+
+
+# Run shell command in ansible - Google
