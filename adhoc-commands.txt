@@ -1,0 +1,9 @@
+adhoc commands
+
+1.checking ping for node and server
+
+	ansible -m ping all
+
+2.
+
+ansible -m shell -a df -h

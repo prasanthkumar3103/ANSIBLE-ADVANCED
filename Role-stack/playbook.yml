@@ -1,0 +1,13 @@
+---
+- name: Playbook-sample
+  hosts: db and webservers
+  roles:
+    - python
+    - mysql
+    - flask_web
+
+
+# ansible-playbook playbook-sample.yml inventory
+
+
+

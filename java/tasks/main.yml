@@ -1,0 +1,8 @@
+- name: install openjdk
+  become: yes
+  include_vars: "{{ ansible_os_family }}.yml"
+  package:
+    name: "{{ openjdk_jdk_package_name }}"
+    state: present
+    tags:
+        - openjdk_jdk_install_package
