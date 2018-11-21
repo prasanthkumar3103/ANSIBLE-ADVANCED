@@ -1,0 +1,31 @@
+Notes:-- you neednot have agent installation in nodes, installing ansible in main server is enough
+
+Below steps common for all control server and nodes
+
+
+1.adduser ansible
+
+2.passwd ansible
+
+3.sudo -i
+
+4.visudo
+
+#go to a place where u have root user and below
+
+ansible	ALL=(ALL)	ALL
+
+5.vi /etc/ssh/sshd_config( u should do by sudo -i(meaning root)
+
+#un comment below line from 5th step
+PasswordAuthentication yes
+
+sudo service sshd restart
+
+6.ssh-keygen
+
+7.ssh-copy-id localhost
+
+8.vi /etc/ansible/hosts
+
+9.ansible -m ping localhost
