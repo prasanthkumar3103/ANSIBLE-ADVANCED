@@ -1,0 +1,9 @@
+---
+-  name: print memory with debug and ansible factors
+   hosts: localhost
+   become: yes
+   tasks:
+     - name: print memory with debug
+       debug:
+         msg: "free memory is {{ansible_memory_mb.real.free}}"
+

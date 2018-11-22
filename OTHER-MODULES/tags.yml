@@ -1,0 +1,25 @@
+# for some reason after uninstallation i want to check memory from big playbook file
+# sol: tags
+
+# to execute certain plays
+
+---
+-  name: apache install on RHEL or ubuntu
+   hosts: localhost
+   become: yes
+   tasks:
+     - name: install apache on RHEL
+       yum: 
+         name: httpd
+         state: present
+       when: not ansible_os_family == "Debian"
+       tags:
+        - install
+
+     - name: print memory with debug
+       debug:
+         msg: "free memory is {{ansible_memory_mb.real.free}}"
+       tags:
+         - debug
+
+# ansible-playbook tags.yml --tags "debug"

@@ -1,0 +1,16 @@
+---
+-  name: apache install on RHEL or ubuntu
+   hosts: localhost
+   become: yes
+   tasks:
+     - name: install apache on RHEL
+       yum: 
+         name: httpd
+         state: present
+       when: not ansible_os_family == "Debian"
+     
+      
+    
+  
+        
+      

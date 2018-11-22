@@ -1,0 +1,12 @@
+---
+-  name: command module example
+   hosts: localhost
+   become: yes
+   tasks:
+     - name: print content of file
+       command: cat /etc/ansible/hosts
+       register: cat_contents # it stores the o/p of command
+      
+     - name: display contents
+       debug:
+         msg: "{{cat_contents}}"
