@@ -1,0 +1,11 @@
+- hosts: ansible-node.asia-south1-c.c.devops-223105.internal
+  become: true
+  roles:
+    - apache
+- hosts: localhost
+  become: true
+  roles:
+    - apache
+
+
+#  ansible-playbook site.yml --user=ansible --ask-sudo-pass    

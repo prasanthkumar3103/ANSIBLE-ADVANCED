@@ -1,0 +1,9 @@
+- hosts: ansible-node.asia-south1-c.c.devops-223105.internal
+  become: true
+  roles:
+    - java
+
+- hosts: localhost
+  become: true
+  roles:
+    - java

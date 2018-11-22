@@ -1,0 +1,3 @@
+---
+dnsserver: localhost
+ntpserver: localhost

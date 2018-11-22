@@ -1,0 +1,13 @@
+adhoc commands
+
+1.checking ping for node and server
+
+	ansible -m ping all
+
+2.
+
+ansible -m shell -a df -h
+
+3. transfer files from one server to other servers
+
+ansible localhost -m copy -a "src=/etc/hosts/test dest=/var/tmp"

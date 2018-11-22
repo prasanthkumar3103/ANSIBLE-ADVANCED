@@ -1,0 +1,33 @@
+ansible vault:
+--------------
+
+we dont have coding excercise for ansible vault
+
+#inventory file -inventory.txt
+
+db_server	ansible_ssh_pass=Passw0rd	ansible_host=192.168.1.1
+web_server	ansible_ssh_pass=Passw0rd	ansible_host=192.168.1.2
+
+
+we've been storing credentials using to connect servers in a plain text format so far.
+maintaining in plaintext file is not best practice
+
+
+ansible-valut encrypt inventory.txt #  it will ask for password to encrypt
+
+
+ansible-playbook playbook.yml -i inventory.txt # it will throw an error since its encrypt
+
+ansible-playbook playbook.yml -i inventory.txt -ask-vault-pass
+
+ansible-playbook playbook.yml -i inventory.txt -vault-password=file ~./vault_pass.txt
+
+security reasons we can maintain it in python file
+ansible-playbook playbook.yml -i inventory.txt -vault-password=file ~./vault_pass.py
+
+content view of encrypt file
+ansible-vault view inventory.txt
+
+create valut
+ansible-vault create inventory.txt
+

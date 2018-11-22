@@ -1,0 +1,9 @@
+
+# move the variables from inventory to this file
+#remove the "=" from values of inventory file make it to ":" followed by space to this file  bcoz yml file format
+#ansible_ssh_pass: Passw0rd
+#ansible_host: 192.168.1.14
+
+  db_name: employee_db
+  db_user: db_user
+  db_password: Passw0rd

@@ -1,0 +1,44 @@
+I wanted to have apache webserver ,to have that we do by using galaxy,
+
+since i dont want to download from galaxy, i say initialize offline.
+
+
+1.ansible-galaxy init apache --offline
+
+[root@ansible-control-server roles]# tree
+.
++-- apache
+    +-- defaults
+    ¦   +-- main.yml
+    +-- files
+    +-- handlers
+    ¦   +-- main.yml
+    +-- meta
+    ¦   +-- main.yml
+    +-- README.md
+    +-- tasks
+    ¦   +-- main.yml
+    +-- templates
+    +-- tests
+    ¦   +-- inventory
+    ¦   +-- test.yml
+    +-- vars
+        +-- main.yml
+
+components:-
+-------------
+1.default = data about the role/application(meaning default variables used here)
+ex: webserver port i wanna run on 80
+2.files= we put the static file to send nodes/copy on remote machine
+3.handlers= task which are based on some actions. triggers.
+ex:-in case my config file changes of apache, service should restart,so, that code
+will be written here.
+4.meta= who is the author of the role/on which platform it is supported
+ex: information about role,author name,supported platforms etc dependency
+5.task= core logic or code will be stored here
+6.template: will store dynamic files(meaing as per node)
+ex: we write using jinja2 templates
+7.vars= both vars and defaults stores variables, variables stored under "vars"
+has got high priority and difficult to override.
+
+ansible-playbook site.yml --syntax-check
